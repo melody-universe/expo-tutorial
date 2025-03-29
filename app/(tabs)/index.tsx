@@ -11,6 +11,7 @@ import EmojiList from "@/components/EmojiList";
 import EmojiSticker from "@/components/EmojiSticker";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as MediaLibrary from "expo-media-library";
+import { captureRef } from "react-native-view-shot";
 
 const PlaceholderImage = require("@/assets/images/background-image.png");
 
@@ -59,7 +60,16 @@ export default function Index() {
   };
 
   const onSaveImageAsync = async () => {
-    // TODO: Implement this.
+    try {
+      const localUri = await captureRef(imageRef, { height: 440, quality: 1 });
+
+      await MediaLibrary.saveToLibraryAsync(localUri);
+      if (localUri) {
+        alert("Saved!");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
