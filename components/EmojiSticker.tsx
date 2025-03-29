@@ -1,15 +1,38 @@
 import { ImageSource } from "expo-image";
-import Animated from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 export default function EmojiSticker({ imageSize, stickerSource }: Props) {
+  const scaleImage = useSharedValue(imageSize);
+  const imageStyle = useAnimatedStyle(() => ({
+    width: withSpring(scaleImage.value),
+    height: withSpring(scaleImage.value),
+  }));
+
+  const doubleTap = Gesture.Tap()
+    .numberOfTaps(2)
+    .onStart(() => {
+      if (scaleImage.value !== imageSize * 2) {
+        scaleImage.value = scaleImage.value * 2;
+      } else {
+        scaleImage.value = Math.round(scaleImage.value / 2);
+      }
+    });
+
   return (
     <View style={{ top: -350 }}>
-      <Animated.Image
-        source={stickerSource}
-        resizeMode="contain"
-        style={{ width: imageSize, height: imageSize }}
-      />
+      <GestureDetector gesture={doubleTap}>
+        <Animated.Image
+          source={stickerSource}
+          resizeMode="contain"
+          style={[imageStyle, { width: imageSize, height: imageSize }]}
+        />
+      </GestureDetector>
     </View>
   );
 }
