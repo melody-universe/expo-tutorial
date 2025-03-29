@@ -1,10 +1,25 @@
 import Button from "@/components/Button";
 import ImageViewer from "@/components/ImageViewer";
 import { StyleSheet, View } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 
 const PlaceholderImage = require("@/assets/images/background-image.png");
 
 export default function Index() {
+  const pickImageAsync = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      console.log(result);
+    } else {
+      alert("You did not select any image.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
